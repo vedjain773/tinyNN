@@ -1,6 +1,7 @@
 #include <Eigen/Core>
 #include <layer.hpp>
 #include <activation.hpp>
+#include <init.hpp>
 #include <iostream>
 
 using Eigen::MatrixXd;
@@ -9,8 +10,10 @@ using Eigen::Ref;
 Layer::Layer(int noOfNeurons, int prevLayerNeurons) {
     preActivations = MatrixXd::Zero(noOfNeurons, 1);
     activations = MatrixXd::Zero(noOfNeurons, 1);
-    weights = MatrixXd::Random(noOfNeurons, prevLayerNeurons);
+    weights = MatrixXd::Zero(noOfNeurons, prevLayerNeurons);
     biases = MatrixXd::Zero(noOfNeurons, 1);
+
+    Xavier(weights, prevLayerNeurons, noOfNeurons);
 
     gAct = MatrixXd::Zero(noOfNeurons, 1);
     gWeights = MatrixXd::Zero(noOfNeurons, prevLayerNeurons);
@@ -53,8 +56,7 @@ void Layer::updateParams(double learningRate, double multiplier) {
 }
 
 void Layer::resetGrads() {
-    gAct = MatrixXd::Zero(gAct.rows(), 1);
-    gWeights = MatrixXd::Random(gWeights.rows(), gWeights.cols());
+    gWeights = MatrixXd::Zero(gWeights.rows(), gWeights.cols());
     gBiases = MatrixXd::Zero(gBiases.rows(), 1);
 }
 

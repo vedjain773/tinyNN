@@ -47,16 +47,17 @@ void Trainer::trainModel(const std::string path, Network& network) {
     Eigen::MatrixXd grad = Eigen::MatrixXd::Zero(10, 1);
 
     const double avgMultiplier = 1;
+    double loss;
 
     for (int epoch = 0; epoch < epochSize; epoch++) {
 
         std::vector<int> shuffleIndices = shuffle();
 
         for (int i = 0; i < sampleSize; i += batchSize) {
-            int acc = 0;
+        int acc = 0;
 
             for (int j = i; j < i + batchSize; j++) {
-                desOp = Eigen::MatrixXd::Zero(10, 1);
+                desOp = Eigen::MatrixXd::Constant(10, 1, 0.1);
                 std::vector<float> data = samples.at(shuffleIndices.at(j));
 
                 double label = 0.0;
@@ -65,9 +66,10 @@ void Trainer::trainModel(const std::string path, Network& network) {
                 network.fPass(initialVals, op);
 
                 int netGuess = networkGuess(op);
-                desOp((int)label, 0) = 1.0;
 
-                double loss = calcGradient(op, desOp, grad);
+                desOp((int)label, 0) = 0.9;
+
+                loss = calcGradient(op, desOp, grad);
                 network.bPass(grad);
 
                 if (netGuess == (int)label) {
@@ -84,7 +86,10 @@ void Trainer::trainModel(const std::string path, Network& network) {
             }
 
             int batchNum = (int)(i / batchSize);
-            std::cout << "Batch Number: " << batchNum << " Accuracy: " << acc << "/" << batchSize << std::endl;
+
+            if (batchNum % 60 == 0) {
+                std::cout << "Batch Number: " << batchNum << " Accuracy: " << acc << "/" << batchSize << " Loss: " << loss << std::endl;
+            }
         }
 
         // std::cout << "Epoch Number: " << epoch << " Accuracy: " << acc << "/" << sampleSize << std::endl;

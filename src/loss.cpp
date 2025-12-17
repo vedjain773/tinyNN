@@ -14,7 +14,7 @@ double calcGradient(const Ref<const MatrixXd> output, const Ref<const MatrixXd> 
         loss += gradient(i, 0) * gradient(i, 0);
     }
 
-    return loss;
+    return loss / 4;
 }
 
 int networkGuess(const Ref<const MatrixXd> output) {

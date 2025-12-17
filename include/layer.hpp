@@ -2,6 +2,7 @@
 #define LAYER_H
 
 #include <Eigen/Core>
+#include <init.hpp>
 #include <vector>
 using Eigen::MatrixXd;
 using Eigen::Ref;
