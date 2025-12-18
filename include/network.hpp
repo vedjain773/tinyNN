@@ -2,6 +2,7 @@
 #define NETWORK
 
 #include <Eigen/Core>
+#include <fstream>
 #include <loss.hpp>
 #include <layer.hpp>
 #include <vector>
@@ -18,6 +19,9 @@ class Network {
 
     void fPass(std::vector<float> inpLayerVals, Ref<MatrixXd> op);
     void bPass(const Ref<const MatrixXd> grad);
+
+    void save(const std::string path);
+    void load(const std::string path);
 };
 
 #endif

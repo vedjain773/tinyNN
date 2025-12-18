@@ -36,3 +36,53 @@ void Network::bPass(const Ref<const MatrixXd> grad) {
         gradient = layers.at(i).gAct;
     }
 }
+
+void Network::save(const std::string path) {
+    std::ofstream out(path, std::ios::binary);
+
+    const char head[4] = {'N', 'N', 'E', 'T'};
+    int version = 1;
+    int layerCount = neuronsPerLayer.size();
+
+    out.write(head, 4);
+    out.write(reinterpret_cast<char*>(&version), sizeof(int));
+    out.write(reinterpret_cast<char*>(&layerCount), sizeof(int));
+
+    int inpNeurons = inputLayer.size;
+
+    out.write(reinterpret_cast<char*>(&inpNeurons), sizeof(int));
+
+    for (const Layer& layer : layers) {
+        int noOfNeurons = layer.size;
+
+        out.write(reinterpret_cast<char*>(&noOfNeurons), sizeof(int));
+
+        out.write(reinterpret_cast<const char*>(layer.weights.data()), sizeof(double) * layer.size * layer.prevLayerSize);
+        out.write(reinterpret_cast<const char*>(layer.biases.data()), sizeof(double) * layer.size);
+    }
+}
+
+void Network::load(const std::string path) {
+    std::ifstream in(path, std::ios::binary);
+
+    char head[4];
+    int version;
+    int layerCount;
+
+    in.read(head, 4);
+    in.read(reinterpret_cast<char*>(&version), sizeof(int));
+    in.read(reinterpret_cast<char*>(&layerCount), sizeof(int));
+
+    int inpNeurons = inputLayer.size;
+
+    in.read(reinterpret_cast<char*>(&inpNeurons), sizeof(int));
+
+    for (Layer& layer : layers) {
+        int noOfNeurons = layer.size;
+
+        in.read(reinterpret_cast<char*>(&noOfNeurons), sizeof(int));
+
+        in.read(reinterpret_cast<char*>(layer.weights.data()), sizeof(double) * layer.size * layer.prevLayerSize);
+        in.read(reinterpret_cast<char*>(layer.biases.data()), sizeof(double) * layer.size);
+    }
+}

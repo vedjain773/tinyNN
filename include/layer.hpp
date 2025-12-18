@@ -3,12 +3,15 @@
 
 #include <Eigen/Core>
 #include <init.hpp>
+#include <activation.hpp>
 #include <vector>
 using Eigen::MatrixXd;
 using Eigen::Ref;
 
 class Layer {
     public:
+    int size;
+    int prevLayerSize;
 
     MatrixXd preActivations;
     MatrixXd activations;
@@ -29,6 +32,8 @@ class Layer {
 
 class InputLayer {
     public:
+    int size;
+
     MatrixXd inpAct;
 
     InputLayer ();

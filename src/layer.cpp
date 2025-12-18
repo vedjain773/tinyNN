@@ -1,13 +1,14 @@
 #include <Eigen/Core>
 #include <layer.hpp>
-#include <activation.hpp>
-#include <init.hpp>
 #include <iostream>
 
 using Eigen::MatrixXd;
 using Eigen::Ref;
 
 Layer::Layer(int noOfNeurons, int prevLayerNeurons) {
+    size = noOfNeurons;
+    prevLayerSize = prevLayerNeurons;
+
     preActivations = MatrixXd::Zero(noOfNeurons, 1);
     activations = MatrixXd::Zero(noOfNeurons, 1);
     weights = MatrixXd::Zero(noOfNeurons, prevLayerNeurons);
@@ -62,14 +63,17 @@ void Layer::resetGrads() {
 
 InputLayer::InputLayer() {
     inpAct = MatrixXd::Zero(784, 1);
+    size = 784;
 }
 
 InputLayer::InputLayer(int rows) {
     inpAct = MatrixXd::Zero(rows, 1);
+    size = rows;
 }
 
 void InputLayer::resize(int rows) {
     inpAct.resize(rows, 1);
+    size = rows;
 }
 
 void InputLayer::initInputLayer(std::vector<float> pixelVals) {
