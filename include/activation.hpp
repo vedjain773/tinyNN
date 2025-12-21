@@ -2,10 +2,37 @@
 #define ACTIVATION_H
 
 #include <math.h>
+#include <iostream>
+#include <init.hpp>
+#include <Eigen/Core>
 
-double sigmoid(double x);
-double d_dtSigmoid(double x);
-double ReLU(double x);
-double d_dtReLU(double x);
+using Eigen::MatrixXd;
+using Eigen::Ref;
+
+enum ActType {
+    SIGMOID,
+    RELU
+};
+
+class Activation {
+    public:
+    virtual MatrixXd activate(const Ref<const MatrixXd> preAct);
+    virtual MatrixXd derivative(const Ref<const MatrixXd> inp);
+    virtual void init (Ref<MatrixXd> weights, int fanIn, int fanOut);
+};
+
+class Sigmoid: public Activation {
+    public:
+    MatrixXd activate(const Ref<const MatrixXd> preAct);
+    MatrixXd derivative(const Ref<const MatrixXd> inp);
+    void init (Ref<MatrixXd> weights, int fanIn, int fanOut);
+};
+
+class Relu: public Activation {
+    public:
+    MatrixXd activate(const Ref<const MatrixXd> preAct);
+    MatrixXd derivative(const Ref<const MatrixXd> inp);
+    void init (Ref<MatrixXd> weights, int fanIn, int fanOut);
+};
 
 #endif

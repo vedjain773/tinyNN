@@ -5,18 +5,19 @@
 
 int main() {
     std::vector<int> arch = {784, 48, 10};
-    Network network(arch);
+    std::vector<ActType> types = {RELU, RELU, SIGMOID};
+    Network network(arch, types);
 
     //Training the model
-    Trainer trainer(60000, 40, 100, 0.0175);
+    Trainer trainer(60000, 1, 100, 0.02);
     trainer.trainModel("data/mnist_train.csv/mnist_train.csv", network);
 
     //Saving the model
     std::cout << "Saving model... \n";
     network.save("./saves/mnist1.bin");
 
-    std::vector<int> arch = {784, 48, 10};
-    Network network2(arch);
+    std::vector<int> arch2 = {784, 48, 10};
+    Network network2(arch2, types);
 
     //Loading the saved model onto another model
     std::cout << "Loading model... \n";

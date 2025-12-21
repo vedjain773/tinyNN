@@ -10,12 +10,16 @@
 using Eigen::MatrixXd;
 
 class Network {
+    private:
+    Sigmoid sig;
+    Relu relu;
+
     public:
     std::vector<int> neuronsPerLayer;
     std::vector<Layer> layers;
     InputLayer inputLayer;
 
-    Network(std::vector<int> nPL);
+    Network(std::vector<int> nPL, std::vector<ActType> aTypes);
 
     void fPass(std::vector<float> inpLayerVals, Ref<MatrixXd> op);
     void bPass(const Ref<const MatrixXd> grad);

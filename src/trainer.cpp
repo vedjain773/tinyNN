@@ -55,6 +55,7 @@ void Trainer::trainModel(const std::string path, Network& network) {
 
         for (int i = 0; i < sampleSize; i += batchSize) {
         int acc = 0;
+        double loss = 0;
 
             for (int j = i; j < i + batchSize; j++) {
                 desOp = Eigen::MatrixXd::Constant(10, 1, 0.1);
@@ -69,7 +70,7 @@ void Trainer::trainModel(const std::string path, Network& network) {
 
                 desOp((int)label, 0) = 0.9;
 
-                loss = calcGradient(op, desOp, grad);
+                loss += calcGradient(op, desOp, grad);
                 network.bPass(grad);
 
                 if (netGuess == (int)label) {
@@ -88,7 +89,7 @@ void Trainer::trainModel(const std::string path, Network& network) {
             int batchNum = (int)(i / batchSize);
 
             if (batchNum % 60 == 0) {
-                std::cout << "Batch Number: " << batchNum << " Accuracy: " << acc << "/" << batchSize << " Loss: " << loss << std::endl;
+                std::cout << "Batch Number: " << batchNum << " Accuracy: " << acc << "/" << batchSize << " Loss: " << 0.01 * loss << std::endl;
             }
         }
 

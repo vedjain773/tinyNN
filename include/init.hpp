@@ -9,5 +9,6 @@ using Eigen::Ref;
 using Eigen::MatrixXd;
 
 void Xavier (Ref<MatrixXd> weights, int fanIn, int fanOut);
+void HeNormal(Ref<MatrixXd> weights, int fanIn);
 
 #endif

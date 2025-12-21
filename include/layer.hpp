@@ -2,7 +2,6 @@
 #define LAYER_H
 
 #include <Eigen/Core>
-#include <init.hpp>
 #include <activation.hpp>
 #include <vector>
 using Eigen::MatrixXd;
@@ -13,6 +12,8 @@ class Layer {
     int size;
     int prevLayerSize;
 
+    Activation* act;
+
     MatrixXd preActivations;
     MatrixXd activations;
     MatrixXd weights;
@@ -22,7 +23,7 @@ class Layer {
     MatrixXd gWeights;
     MatrixXd gBiases;
 
-    Layer (int noOfNeurons, int prevLayerNeurons);
+    Layer (int noOfNeurons, int prevLayerNeurons, Activation* at);
 
     void forwardPass(const Ref<const MatrixXd>& prevLayerAct);
     void backwardPass(const Ref<const MatrixXd> gradient, const Ref<const MatrixXd> prevLayerAct);

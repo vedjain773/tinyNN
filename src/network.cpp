@@ -3,13 +3,28 @@
 
 using Eigen::MatrixXd;
 
-Network::Network(std::vector<int> nPL) {
+Network::Network(std::vector<int> nPL, std::vector<ActType> aTypes) {
     neuronsPerLayer = nPL;
 
     for (int i = 1; i < nPL.size(); i++) {
         std::cout << neuronsPerLayer.at(i) << " " << neuronsPerLayer.at(i-1) << std::endl;
-        Layer layer(neuronsPerLayer.at(i), neuronsPerLayer.at(i-1));
-        layers.push_back(layer);
+
+        switch(aTypes.at(i)) {
+            case SIGMOID:
+            {
+                Layer layer(neuronsPerLayer.at(i), neuronsPerLayer.at(i-1), &sig);
+                layers.push_back(layer);
+            }
+            break;
+
+            case RELU:
+            {
+                Layer layer(neuronsPerLayer.at(i), neuronsPerLayer.at(i-1), &relu);
+                layers.push_back(layer);
+            }
+            break;
+        }
+
     }
 
     inputLayer.resize(neuronsPerLayer.at(0));

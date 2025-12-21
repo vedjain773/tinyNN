@@ -5,7 +5,7 @@
 using Eigen::MatrixXd;
 using Eigen::Ref;
 
-Layer::Layer(int noOfNeurons, int prevLayerNeurons) {
+Layer::Layer(int noOfNeurons, int prevLayerNeurons, Activation* at) {
     size = noOfNeurons;
     prevLayerSize = prevLayerNeurons;
 
@@ -14,7 +14,9 @@ Layer::Layer(int noOfNeurons, int prevLayerNeurons) {
     weights = MatrixXd::Zero(noOfNeurons, prevLayerNeurons);
     biases = MatrixXd::Zero(noOfNeurons, 1);
 
-    Xavier(weights, prevLayerNeurons, noOfNeurons);
+    act = at;
+
+    act->init(weights, prevLayerNeurons, noOfNeurons);
 
     gAct = MatrixXd::Zero(noOfNeurons, 1);
     gWeights = MatrixXd::Zero(noOfNeurons, prevLayerNeurons);
@@ -27,19 +29,12 @@ void Layer::forwardPass(const Ref<const MatrixXd>& prevLayerAct) {
     } else {
         preActivations = (weights * prevLayerAct) + biases;
 
-        for (int i = 0; i < activations.rows(); i++) {
-            activations(i, 0) = sigmoid(preActivations(i, 0));
-        }
+        activations = act->activate(preActivations);
     }
 }
 
 void Layer::backwardPass(const Ref<const MatrixXd> gradient, const Ref<const MatrixXd> prevLayerAct) {
-    MatrixXd sigDZ;
-    sigDZ = MatrixXd::Zero(gradient.rows(), 1);
-
-    for (int i = 0; i < sigDZ.rows(); i++) {
-        sigDZ(i, 0) = d_dtSigmoid(preActivations(i, 0));
-    }
+    MatrixXd sigDZ = act->derivative(preActivations);
 
     MatrixXd commTerm = gradient.cwiseProduct(sigDZ);
 
