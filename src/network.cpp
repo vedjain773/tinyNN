@@ -4,6 +4,14 @@
 using Eigen::MatrixXd;
 
 Network::Network(std::vector<int> nPL, std::vector<ActType> aTypes) {
+    if (nPL.size() != aTypes.size()) {
+        throw std::runtime_error(
+            "Invalid network configuration: each layer must have a corresponding activation type "
+            "(layers = " + std::to_string(nPL.size()) +
+            ", activation types = " + std::to_string(aTypes.size()) + ")"
+        );
+    }
+
     neuronsPerLayer = nPL;
 
     for (int i = 1; i < nPL.size(); i++) {
@@ -95,14 +103,36 @@ void Network::load(const std::string path) {
     in.read(reinterpret_cast<char*>(&version), sizeof(int));
     in.read(reinterpret_cast<char*>(&layerCount), sizeof(int));
 
-    int inpNeurons = inputLayer.size;
+    if (layerCount != neuronsPerLayer.size()) {
+        throw std::runtime_error(
+            "Network architecture mismatch: expected " + std::to_string(layerCount) +
+            " layers, but network specifies " +
+            std::to_string(neuronsPerLayer.size())
+        );
+    }
+
+    int inpNeurons = 0;
 
     in.read(reinterpret_cast<char*>(&inpNeurons), sizeof(int));
 
+    if (inpNeurons != inputLayer.size) {
+        throw std::runtime_error(
+            "Layer size mismatch: expected " + std::to_string(inpNeurons) +
+            " neurons, but layer contains " + std::to_string(inputLayer.size)
+        );
+    }
+
     for (Layer& layer : layers) {
-        int noOfNeurons = layer.size;
+        int noOfNeurons;
 
         in.read(reinterpret_cast<char*>(&noOfNeurons), sizeof(int));
+
+        if (noOfNeurons != layer.size) {
+            throw std::runtime_error(
+                "Layer size mismatch: expected " + std::to_string(noOfNeurons) +
+                " neurons, but layer contains " + std::to_string(layer.size)
+            );
+        }
 
         in.read(reinterpret_cast<char*>(layer.weights.data()), sizeof(double) * layer.size * layer.prevLayerSize);
         in.read(reinterpret_cast<char*>(layer.biases.data()), sizeof(double) * layer.size);
