@@ -23,6 +23,13 @@ Network::Network(std::vector<int> nPL, std::vector<ActType> aTypes) {
                 layers.push_back(layer);
             }
             break;
+
+            case NONE:
+            {
+                Layer layer(neuronsPerLayer.at(i), neuronsPerLayer.at(i-1), &none);
+                layers.push_back(layer);
+            }
+            break;
         }
 
     }

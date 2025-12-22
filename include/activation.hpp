@@ -11,7 +11,8 @@ using Eigen::Ref;
 
 enum ActType {
     SIGMOID,
-    RELU
+    RELU,
+    NONE
 };
 
 class Activation {
@@ -29,6 +30,13 @@ class Sigmoid: public Activation {
 };
 
 class Relu: public Activation {
+    public:
+    MatrixXd activate(const Ref<const MatrixXd> preAct);
+    MatrixXd derivative(const Ref<const MatrixXd> inp);
+    void init (Ref<MatrixXd> weights, int fanIn, int fanOut);
+};
+
+class None: public Activation {
     public:
     MatrixXd activate(const Ref<const MatrixXd> preAct);
     MatrixXd derivative(const Ref<const MatrixXd> inp);

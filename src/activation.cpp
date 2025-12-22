@@ -68,3 +68,19 @@ MatrixXd Relu::derivative(const Ref<const MatrixXd> inp) {
 void Relu::init(Ref<MatrixXd> weights, int fanIn, int fanOut){
     HeNormal(weights, fanIn);
 }
+
+MatrixXd None::activate(const Ref<const MatrixXd> preAct) {
+    // MatrixXd out = preAct;
+
+    return preAct;
+}
+
+MatrixXd None::derivative(const Ref<const MatrixXd> inp) {
+    MatrixXd out = MatrixXd::Constant(inp.rows(), inp.cols(), 1);
+
+    return out;
+}
+
+void None::init(Ref<MatrixXd> weights, int fanIn, int fanOut){
+    Xavier(weights, fanIn, fanOut);
+}

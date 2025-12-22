@@ -1,6 +1,7 @@
 #ifndef NETWORK
 #define NETWORK
 
+#include "activation.hpp"
 #include <Eigen/Core>
 #include <fstream>
 #include <loss.hpp>
@@ -13,6 +14,7 @@ class Network {
     private:
     Sigmoid sig;
     Relu relu;
+    None none;
 
     public:
     std::vector<int> neuronsPerLayer;

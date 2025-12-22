@@ -46,10 +46,11 @@ void Trainer::trainModel(const std::string path, Network& network) {
     Eigen::MatrixXd desOp = Eigen::MatrixXd::Zero(10, 1);
     Eigen::MatrixXd grad = Eigen::MatrixXd::Zero(10, 1);
 
-    const double avgMultiplier = 1;
+    const double avgMultiplier = 0.01;
     double loss;
 
     for (int epoch = 0; epoch < epochSize; epoch++) {
+        std::cout << "      Epoch Number:       " << epoch << std::endl;
 
         std::vector<int> shuffleIndices = shuffle();
 
@@ -58,7 +59,7 @@ void Trainer::trainModel(const std::string path, Network& network) {
         double loss = 0;
 
             for (int j = i; j < i + batchSize; j++) {
-                desOp = Eigen::MatrixXd::Constant(10, 1, 0.1);
+                desOp = Eigen::MatrixXd::Constant(10, 1, 0);
                 std::vector<float> data = samples.at(shuffleIndices.at(j));
 
                 double label = 0.0;
@@ -68,9 +69,9 @@ void Trainer::trainModel(const std::string path, Network& network) {
 
                 int netGuess = networkGuess(op);
 
-                desOp((int)label, 0) = 0.9;
+                desOp((int)label, 0) = 1;
 
-                loss += calcGradient(op, desOp, grad);
+                loss += softCEGrad(op, desOp, grad);
                 network.bPass(grad);
 
                 if (netGuess == (int)label) {
@@ -78,11 +79,11 @@ void Trainer::trainModel(const std::string path, Network& network) {
                 }
             }
 
-            for (int i = network.layers.size()-1; i >= 1; i--) {
+            for (int i = network.layers.size()-1; i >= 0; i--) {
                 network.layers.at(i).updateParams(learningRate, avgMultiplier);
             }
 
-            for (int i = network.layers.size()-1; i >= 1; i--) {
+            for (int i = network.layers.size()-1; i >= 0; i--) {
                 network.layers.at(i).resetGrads();
             }
 
@@ -92,8 +93,6 @@ void Trainer::trainModel(const std::string path, Network& network) {
                 std::cout << "Batch Number: " << batchNum << " Accuracy: " << acc << "/" << batchSize << " Loss: " << 0.01 * loss << std::endl;
             }
         }
-
-        // std::cout << "Epoch Number: " << epoch << " Accuracy: " << acc << "/" << sampleSize << std::endl;
     }
 }
 
