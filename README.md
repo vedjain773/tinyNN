@@ -24,3 +24,22 @@ The project supports serialization and deserialization of trained neural network
 - Bias vectors
 
 Model loading requires a pre-defined architecture that matches the saved configuration.
+
+## Demo
+A model created using the project was trained on the MNIST handwritten digits dataset and achieved a final test accuracy of 93.75%.
+
+### Model stats:
+- Layers: 784 (Input) --> 128 --> 64 --> 10 (Output)
+- Layer-Specific activations: ReLU (hidden), Softmax (Output)
+- Loss: Cross-entropy
+- No. of training samples: 60000
+- Batch Size: 100
+- Learning Rate: 0.5
+- No. of Epochs: 5
+
+### Loss-Accuracy per Batch
+- Loss per Batch
+![Loss per batch](./assets/loss.png)
+
+- Accuracy per Batch
+![Accuracy per batch](./assets/acc.png)
