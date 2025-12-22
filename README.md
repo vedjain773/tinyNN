@@ -1,5 +1,5 @@
 # Tiny NN
-This project is a from-scratch implementation of a fully connected neural network written in C++, using Eigen for linear algebra with a great emphasis on user configuration and customisation.
+This project is a from-scratch implementation of a fully connected neural network written in C++, using Eigen for linear algebra with a great emphasis on model configuration and customisation.
 
 ## Network Configuration
 The project allows explicit and flexible configuration of neural network architectures directly in code.
@@ -8,6 +8,7 @@ The project allows explicit and flexible configuration of neural network archite
 - Arbitrary number of layers
 - Configurable number of neurons per layer
 - Explicit layer ordering
+- Layer-specific activations
 - Adjustable training hyperparameters (learning rate, batch size, epochs)
 
 Network architectures are defined programmatically by constructing and assembling layers, making it straightforward to modify or extend existing configurations.

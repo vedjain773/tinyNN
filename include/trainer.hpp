@@ -20,6 +20,9 @@ class Trainer {
     std::vector<int> shuffle();
     void trainModel(const std::string path, Network& network);
     void testModel(const std::string path, Network& network);
+
+    void recordLossPerBatch(double loss, int epochNum, int batchNum, std::string path);
+    void recordAccPerBatch(double acc, int epochNum, int batchNum, std::string path);
 };
 
 #endif

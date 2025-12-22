@@ -4,12 +4,12 @@
 #include <trainer.hpp>
 
 int main() {
-    std::vector<ActType> types = {RELU, RELU, NONE};
-    std::vector<int> arch = {784, 48, 10};
+    std::vector<ActType> types = {RELU, RELU, RELU, NONE};
+    std::vector<int> arch = {784, 128, 64, 10};
     Network network(arch, types);
 
     //Training the model
-    Trainer trainer(60000, 1, 100, 0.5);
+    Trainer trainer(60000, 5, 100, 0.5);
     trainer.trainModel("data/mnist_train.csv/mnist_train.csv", network);
 
     //Saving the model
