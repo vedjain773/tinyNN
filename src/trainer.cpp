@@ -4,11 +4,21 @@
 #include <loss.hpp>
 #include <readCSV.hpp>
 
-Trainer::Trainer(int sSize, int eSize, int bSize, double lRate) {
+Trainer::Trainer(int sSize, int eSize, int bSize, double lRate, LossType lt) {
     sampleSize = sSize;
     epochSize = eSize;
     batchSize = bSize;
     learningRate = lRate;
+
+    switch (lt) {
+        case MSE:
+            lossNet = &mse;
+        break;
+
+        case SCE:
+            lossNet = &sce;
+        break;
+    }
 }
 
 void Trainer::recordLossPerBatch(double loss, int epochNum, int batchNum, std::string path) {
@@ -58,7 +68,7 @@ void Trainer::trainModel(const std::string path, Network& network) {
     Eigen::MatrixXd desOp = Eigen::MatrixXd::Zero(10, 1);
     Eigen::MatrixXd grad = Eigen::MatrixXd::Zero(10, 1);
 
-    const double avgMultiplier = 0.01;
+    const double avgMultiplier = 1;
     double loss;
 
     for (int epoch = 0; epoch < epochSize; epoch++) {
@@ -68,7 +78,7 @@ void Trainer::trainModel(const std::string path, Network& network) {
 
         for (int i = 0; i < sampleSize; i += batchSize) {
             int acc = 0;
-            double loss = 0;
+            double lossMod = 0;
 
             for (int j = i; j < i + batchSize; j++) {
                 desOp = Eigen::MatrixXd::Constant(10, 1, 0);
@@ -83,7 +93,7 @@ void Trainer::trainModel(const std::string path, Network& network) {
 
                 desOp((int)label, 0) = 1;
 
-                loss += softCEGrad(op, desOp, grad);
+                lossMod += lossNet->calcGradient(op, desOp, grad);
                 network.bPass(grad);
 
                 if (netGuess == (int)label) {
@@ -102,11 +112,11 @@ void Trainer::trainModel(const std::string path, Network& network) {
             int batchNum = (int)(i / batchSize);
 
             if (batchNum % 60 == 0) {
-                std::cout << "Batch Number: " << batchNum << " Accuracy: " << acc << "/" << batchSize << " Loss: " << 0.01 * loss << std::endl;
+                std::cout << "Batch Number: " << batchNum << " Accuracy: " << acc << "/" << batchSize << " Loss: " << 0.01 * lossMod << std::endl;
             }
 
             recordAccPerBatch(0.01 * acc, epoch, batchNum, "./logs/log1/acc.csv");
-            recordLossPerBatch(0.01 * loss, epoch, batchNum, "./logs/log1/loss.csv");
+            recordLossPerBatch(0.01 * lossMod, epoch, batchNum, "./logs/log1/loss.csv");
         }
     }
 }

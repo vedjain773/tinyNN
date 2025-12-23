@@ -6,8 +6,26 @@
 using Eigen::MatrixXd;
 using Eigen::Ref;
 
-double calcGradient(const Ref<const MatrixXd> output, const Ref<const MatrixXd> desOutput, Ref<MatrixXd> gradient);
-double softCEGrad(const Ref<const MatrixXd> output, const Ref<const MatrixXd> desOutput, Ref<MatrixXd> gradient);
+enum LossType {
+    MSE,
+    SCE
+};
+
+class Loss {
+    public:
+    virtual double calcGradient(const Ref<const MatrixXd> output, const Ref<const MatrixXd> desOutput, Ref<MatrixXd> gradient);
+};
+
+class MsE : public Loss {
+    public:
+    double calcGradient(const Ref<const MatrixXd> output, const Ref<const MatrixXd> desOutput, Ref<MatrixXd> gradient);
+};
+
+class SoftCE : public Loss {
+    public:
+    double calcGradient(const Ref<const MatrixXd> output, const Ref<const MatrixXd> desOutput, Ref<MatrixXd> gradient);
+};
+
 int networkGuess(const Ref<const MatrixXd> output);
 
 #endif

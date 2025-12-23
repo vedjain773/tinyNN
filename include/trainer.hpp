@@ -8,13 +8,19 @@
 #include <stdexcept>
 
 class Trainer {
+    private:
+    MsE mse;
+    SoftCE sce;
+
     public:
     int sampleSize;
     int epochSize;
     int batchSize;
     double learningRate;
 
-    Trainer(int sampleSize, int epochSize, int batchSize, double learningRate);
+    Loss* lossNet;
+
+    Trainer(int sampleSize, int epochSize, int batchSize, double learningRate, LossType lt);
 
     std::vector<std::vector <float>> loadDataSet(std::string path, int noOfSamples);
     std::vector<int> shuffle();

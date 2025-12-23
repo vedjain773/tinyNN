@@ -3,9 +3,8 @@
 using Eigen::MatrixXd;
 using Eigen::Ref;
 
-double calcGradient(const Ref<const MatrixXd> output, const Ref<const MatrixXd> desOutput, Ref<MatrixXd> gradient) {
+double Loss::calcGradient(const Ref<const MatrixXd> output, const Ref<const MatrixXd> desOutput, Ref<MatrixXd> gradient) {
     int rows = output.rows();
-    int cols = output.cols();
     double loss = 0;
 
     gradient = 2 * (output - desOutput);
@@ -17,7 +16,20 @@ double calcGradient(const Ref<const MatrixXd> output, const Ref<const MatrixXd> 
     return loss / 4;
 }
 
-double softCEGrad(const Ref<const MatrixXd> output, const Ref<const MatrixXd> desOutput, Ref<MatrixXd> gradient) {
+double MsE::calcGradient(const Ref<const MatrixXd> output, const Ref<const MatrixXd> desOutput, Ref<MatrixXd> gradient) {
+    int rows = output.rows();
+    double loss = 0;
+
+    gradient = 2 * (output - desOutput);
+
+    for (int i = 0; i < rows; i++) {
+        loss += gradient(i, 0) * gradient(i, 0);
+    }
+
+    return loss / 4;
+}
+
+double SoftCE::calcGradient(const Ref<const MatrixXd> output, const Ref<const MatrixXd> desOutput, Ref<MatrixXd> gradient) {
     int rows = output.rows();
     MatrixXd softMax = output;
 
